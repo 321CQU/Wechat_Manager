@@ -1,0 +1,4 @@
+GET http://{{host}}/token?token={{secret}}
+Accept: application/json
+
+###
