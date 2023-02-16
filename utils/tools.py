@@ -17,7 +17,7 @@ async def handle_wechat_server_event(openid: str, event: str, payload: List[Dict
                 tg.create_task(
                     stub.HandleWechatServerEvent(wechat_model.HandleWechatServerEventRequest(
                         openid=openid, template_id=item['TemplateId'],
-                        is_accept=item['SubscribeStatusString'] == 'accept'
+                        is_accept=(item['SubscribeStatusString'] == 'accept')
                     ))
                 )
 

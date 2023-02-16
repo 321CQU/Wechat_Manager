@@ -5,7 +5,7 @@ from typing import Dict, Optional
 import httpx
 from sanic import Sanic, Request, text, json
 from sanic.exceptions import Unauthorized
-from sanic_ext import openapi
+from sanic_ext import openapi, validate
 from sanic_ext.extensions.openapi.definitions import Parameter
 
 from pydantic import BaseModel, Field
@@ -84,6 +84,7 @@ async def get_openapi(request: Request, code: str):
 
 class NotificationRequest(BaseModel):
     class JumpTarget(StrEnum):
+        """跳转小程序类型"""
         Developer = 'developer'
         Formal = 'formal'
 
@@ -96,7 +97,8 @@ class NotificationRequest(BaseModel):
 @app.post('/notification/<openid>')
 @openapi.parameter(parameter=Parameter('openid', str, 'path', '用户openid'))
 @openapi.parameter(parameter=Parameter('token', str, description='请求密钥'))
-@openapi.body({'application/json': NotificationRequest.schema()}, validate=True)
+@openapi.body({'application/json': openapi.Component(NotificationRequest)})
+@validate(json=NotificationRequest)
 async def push_notification(request: Request, openid: str, body: NotificationRequest):
     """
     发送小程序通知
